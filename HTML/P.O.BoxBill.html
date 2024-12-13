@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P.O. Box Bill</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .gradient-btn {
+            background: linear-gradient(90deg, #1114a5 0%, #a855f7 100%);
+            transition: all 0.3s ease;
+        }
+
+        .gradient-btn:hover {
+            background: linear-gradient(90deg, #a855f7 0%, #1114a5 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .modal-body {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-button {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .modal-button:hover {
+            background-color: #004b87;
+        }
+
+        .modal-button.cancel {
+            background-color: #f8f9fa;
+            color: #0d6efd;
+            border: 1px solid #0d6efd;
+        }
+
+        .modal-button.cancel:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Close button in the top right */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            color: #888;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-[#8EA48C]">
+
+    <!-- Navbar -->
+    <nav class="bg-[#617690] p-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center">
+            <a href="dashboardHomepage.html" class="mr-3">
+                <i data-lucide="arrow-left" class="h-6 w-6 text-white"></i>
+            </a>
+            <img src="../images/logoForWebpage.png" alt="Logo" class="logo mr-3">
+            <span class="text-2xl font-bold text-white">P.O. Box Bill</span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex flex-col md:flex-row gap-6 flex-grow p-6 md:p-16">
+
+        <!-- Left Section: Billing Details -->
+        <div class="bg-white rounded-lg shadow-md p-8 sm:w-1/2">
+            <h2 class="text-2xl font-bold mb-4">Your P.O. Box Bill</h2>
+            <p class="mb-4">Here you can view and manage your P.O. Box billing information.</p>
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2">Current Bill</h3>
+                <p>Amount Due: <span class="font-bold">$15.00</span></p>
+                <p>Due Date: <span class="font-bold">May 1, 2024</span></p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-2">Payment Options</h3>
+                <ul class="space-y-3">
+                    <li><input type="radio" id="credit-card" name="payment-option" class="mr-2"><label for="credit-card">Credit Card</label></li>
+                    <li><input type="radio" id="bank-transfer" name="payment-option" class="mr-2"><label for="bank-transfer">Bank Transfer</label></li>
+                    <li><input type="radio" id="in-person" name="payment-option" class="mr-2"><label for="in-person">In-Person at Post Office</label></li>
+                </ul>
+            </div>
+
+            <div>
+                <button onclick="openModal()" class="gradient-btn text-white px-6 py-3 rounded-full font-semibold">Proceed to Payment</button>
+            </div>
+        </div>
+
+        <!-- Right Section: Plan Details -->
+        <div class="bg-white rounded-lg shadow-md p-8 sm:w-1/2">
+            <h2 class="text-xl font-semibold text-center mb-4">Choose a Plan</h2>
+            <p class="text-center  mb-11">Scale from startup to enterprise</p>
+
+            <div class="grid gap-4 sm:grid-cols-3">
+               <!-- Plan 1 -->
+                <div>
+                    <div class="flex flex-col items-center p-6 text-center border-2 border-gray-300 shadow-md hover:shadow-xl transition-all ease-in-out duration-300 transform hover:scale-105 rounded-lg">
+                        <h3 class="font-bold text-xl">Starter</h3>
+                        <!-- Logo inside a circle with a green border and more padding -->
+                        <div class="w-20 h-20 bg-transparent border-4 border-orange-300 rounded-full flex items-center justify-center mx-auto">
+                            <img src="../images/tag.png" alt="Tag" class="w-10 h-10 object-contain">
+                        </div>
+                        <p class="mt-2">$0</p>
+                        <button onclick="selectPlan('Starter', 0)" class="mt-4 text-sm font-bold text-orange-600 bg-orange-100 rounded-full px-6 py-3 inline-block cursor-pointer transition duration-300 hover:bg-orange-200 hover:text-orange-800">
+                            Free
+                        </button>                        
+                    </div>
+
+                    <div class="flex flex-col items-center mt-4">
+                        <ul class="text-sm text-gray-700 space-y-2">
+                            <li><span style="background-color: black;" class="inline-block w-2 h-2 rounded-full mr-2"></span>All flyers inside</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Plan 2 -->
+                <div class="flex flex-col items-center mt-6">
+                    <div class="bg-white p-6 text-center border-2 border-gray-300 rounded-lg shadow-md hover:shadow-xl transition-all ease-in-out duration-300 transform hover:scale-105">
+                        <h3 class="font-bold text-xl text-gray-800">Professional</h3>
+                        <!-- Logo inside a circle with a green border and more padding -->
+                        <div class="w-20 h-20 bg-transparent border-4 border-green-600 rounded-full flex items-center justify-center mx-auto mt-4 ">
+                            <img src="../images/star.png" alt="Star" class="w-10 h-10 object-contain ">
+                        </div>
+                        <p class="mt-2">$20/monthly</p>
+                        <button onclick="selectPlan('Professional', 20)" class="mt-4 text-sm font-bold text-green-600 bg-green-100 rounded-full px-6 py-3 inline-block cursor-pointer transition duration-300 hover:bg-green-200 hover:text-green-800">
+                            Start now
+                        </button>
+                        
+                    </div>
+
+                    <div class="flex flex-col items-center mt-6">
+                        <ul class="text-sm text-gray-700 space-y-2">
+                            <li><span style="background-color: black;" class="inline-block w-2 h-2 rounded-full mr-2"></span>Custom flyers</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Plan 3 -->
+                <div id="plans">
+                    <div class="bg-white p-6 text-center border-2 border-gray-300 shadow-md hover:shadow-xl transition-all ease-in-out duration-300 transform hover:scale-105 rounded-lg">
+                        <h3 class="font-bold text-lg">Enterprise</h3>
+                        <!-- Logo inside a circle with a green border and more padding -->
+                        <div class="w-20 h-20 bg-transparent border-4 border-blue-600 rounded-full flex items-center justify-center mx-auto">
+                            <img src="../images/tag.png" alt="Tag" class="w-10 h-10 object-contain">
+                        </div>
+                        <p class="mt-2">$40/monthly</p>
+                        <button onclick="selectPlan('Enterprise', 40)" class="mt-4 text-sm font-bold text-blue-600 bg-blue-100 rounded-full px-6 py-3 inline-block cursor-pointer transition duration-300 hover:bg-blue-200 hover:text-blue-800">
+                            Start now
+                        </button>
+                        
+                    </div>
+                    <div class="flex flex-col items-center mt-4">
+                        <ul class="text-sm text-gray-700 space-y-2">
+                            <li><span style="background-color: black;" class="inline-block w-2 h-2 rounded-full mr-2"></span></span>No flyers</li>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#617690] p-4 text-center shadow-lg">
+        <p class="text-white font-semibold">© 2024 <span class="font-bold"><i>MailHub</i></span> All Rights Reserved.</p>
+    </footer>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4 overflow-y-auto">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md relative">
+            <div class="p-4 border-b flex items-center">
+                <button onclick="closeModal()" class="text-blue-600 flex items-center gap-2 hover:text-blue-700">
+                    <i data-lucide="chevron-left" class="h-4 w-4"></i>
+                    <span>Back</span>
+                </button>
+            </div>
+
+            <div class="p-6 max-h-[80vh] overflow-y-auto">
+                <h2 class="text-2xl font-semibold mb-6">Select your card</h2>
+
+                <div class="flex gap-4 mb-6">
+                    <div class="p-4 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-500">
+                        <i data-lucide="credit-card" class="h-6 w-6"></i>
+                    </div>
+                    <div class="p-4 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-500">
+                        <img src="../images/paypal.png" alt="PayPal" class="h-6">
+                    </div>
+                    <div class="p-4 rounded-lg border-2 border-gray-200 cursor-pointer hover:border-blue-500">
+                        <img src="../images/apple-pay.png" alt="Apple Pay" class="h-6">
+                    </div>
+                </div>
+
+                <div class="mb-6 relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-800 to-purple-400 p-6 rounded-xl text-white">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="flex items-center">
+                                <img src="../images/bank.png" alt="Bank" class="h-8">
+                                <span class="p-3 font-bold"> FYI BANK</span>
+                            </span>
+
+                            <span class="font-bold">CREDIT</span>
+                        </div>
+                        <div class="mb-4">
+                            <div class="text-xl tracking-wider font-bold">0000 2363 8364 8269</div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <div class="text-xs opacity-75 mb-1">VALID THRU</div>
+                                <div class="font-bold">5/23</div>
+                            </div>
+                            <div>
+                                <div class="text-xs opacity-75 mb-1">CVV</div>
+                                <div class="font-bold">633</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-3">
+                            <div class="flex flex-col justify-center">
+                                <p class="font-bold">Okechukwu Ozioma</p>
+                            </div>
+
+                            <img src="../images/mastercard-logo.png" alt="Mastercard" class="h-10">
+                        </div>
+                    </div>
+                </div>
+
+                <form id="paymentForm" class="space-y-4">
+                    <div>
+                        <label for="cardName" class="block text-sm font-medium text-gray-700 mb-1">Card name</label>
+                        <input type="text" id="cardName" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Enter card name" maxlength="16" required>
+                    </div>
+                    <div>
+                        <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">Card number</label>
+                        <input type="text" id="cardNumber" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-1">Expiry date</label>
+                            <input type="text" id="expiryDate" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div>
+                            <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                            <input type="text" id="cvv" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" maxlength="3" placeholder="000" required>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-6 border-t pt-4">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-600" id="selectedPlanName">Custom bag</span>
+                        <span class="font-medium" id="selectedPlanPrice">$50</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-600">Monthly Bill</span>
+                        <span class="font-medium">$15</span>
+                    </div>
+                    <div class="flex justify-between font-semibold text-lg">
+                        <span>Total amount</span>
+                        <span id="totalAmount">$55</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 space-y-4">
+                    <label class="flex items-center gap-2">
+                        <input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500">
+                        <span class="text-sm text-gray-600">Save card details</span>
+                    </label>
+                    <button type="submit" form="paymentForm" class="w-full bg-gradient-to-r from-blue-400 to-blue-500 text-white py-4 rounded-lg font-semibold hover:from-blue-500 hover:to-blue-600 transition-all">
+                        PAY NOW
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cardNameInput = document.getElementById('cardName');
+        const cardNumberInput = document.getElementById('cardNumber');
+        const expiryDateInput = document.getElementById('expiryDate');
+        const cvvInput = document.getElementById('cvv');
+        const paymentForm = document.getElementById('paymentForm');
+        const payButton = document.querySelector('button[type="submit"]');
+
+        function formatCardNumber(value) {
+            // Remove spaces and non-digit characters
+            const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+
+            // Ensure that the matched value is not null or empty
+            const matches = v.match(/\d{1,16}/g);
+            const match = matches ? matches[0] : '';
+
+            const parts = [];
+
+            // Break the card number into chunks of 4 digits
+            for (let i = 0, len = match.length; i < len; i += 4) {
+                parts.push(match.substring(i, i + 4));
+            }
+
+            // Return the formatted card number (max length 19 characters)
+            return parts.join(' ').substr(0, 19);
+        }
+
+
+        function formatExpiryDate(value) {
+            const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            if (v.length >= 2) {
+                return v.slice(0, 2) + '/' + v.slice(2, 4);
+            }
+            return v;
+        }
+
+        function updatePayButtonState() {
+            const isFormValid = paymentForm.checkValidity();
+            payButton.disabled = !isFormValid;
+            payButton.classList.toggle('opacity-50', !isFormValid);
+            payButton.classList.toggle('cursor-not-allowed', !isFormValid);
+        }
+
+        cardNameInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '').substr(0, 16);
+            updateCardDetails();
+            updatePayButtonState();
+        });
+
+        cardNumberInput.addEventListener('input', function(e) {
+            e.target.value = formatCardNumber(e.target.value);
+            updateCardDetails();
+            updatePayButtonState();
+        });
+
+        expiryDateInput.addEventListener('input', function(e) {
+            e.target.value = formatExpiryDate(e.target.value);
+            updateCardDetails();
+            updatePayButtonState();
+        });
+
+        cvvInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').substr(0, 3);
+            updateCardDetails();
+            updatePayButtonState();
+        });
+
+        function updateCardDetails() {
+            const cardName = cardNameInput.value;
+            const cardNumber = cardNumberInput.value;
+            const expiryDate = expiryDateInput.value;
+            const cvv = cvvInput.value;
+
+            // Update card number
+            const cardNumberElement = document.querySelector('.text-xl.tracking-wider.font-bold');
+            cardNumberElement.textContent = cardNumber || '0000 0000 0000 0000';
+
+            // Update expiry date
+            const expiryDateElement = document.querySelector('.flex.justify-between.items-end .font-bold');
+            expiryDateElement.textContent = expiryDate || 'MM/YY';
+
+            // Update CVV
+            const cvvElement = document.querySelectorAll('.flex.justify-between.items-end .font-bold')[1];
+            cvvElement.textContent = cvv || '000';
+
+            // Update card holder name
+            const cardHolderElement = document.querySelector('.flex.justify-between.mt-3 .font-bold');
+            cardHolderElement.textContent = cardName || 'Okechukwu Ozioma';
+        }
+
+        // Initial update of pay button state
+        updatePayButtonState();
+
+        // Add form submit event listener
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (paymentForm.checkValidity()) {
+                confirmPayment();
+            } else {
+                alert('Please fill in all required fields correctly.');
+            }
+        });
+    });
+
+    function confirmPayment() {
+        const paymentForm = document.getElementById('paymentForm');
+        if (paymentForm.checkValidity()) {
+            alert('Payment confirmed!');
+            closeModal();
+        } else {
+            alert('Please fill in all required fields correctly.');
+        }
+    }
+
+    function selectPlan(planName, price) {
+        localStorage.setItem('selectedPlan', planName);
+        localStorage.setItem('selectedPrice', price);
+        openModal();
+    }
+
+    function openModal() {
+        const planName = localStorage.getItem('selectedPlan');
+        const price = localStorage.getItem('selectedPrice');
+        const deliveryCharge = 15;
+        const total = parseFloat(price) + deliveryCharge;
+
+        document.getElementById('selectedPlanName').textContent = planName;
+        document.getElementById('selectedPlanPrice').textContent = `$${price}`;
+        document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    lucide.createIcons();
+    </script>
+
+
+</body>
+
+</html>

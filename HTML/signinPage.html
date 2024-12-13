@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .gradient-btn {
+      background: linear-gradient(90deg, rgba(255,0,150,1) 0%, rgba(0,204,255,1) 100%);
+    }
+    .gradient-btn:hover {
+      background: linear-gradient(90deg, rgba(0,204,255,1) 0%, rgba(255,0,150,1) 100%);
+    }
+
+    .logoMain img {
+      height: 200px;
+      width: auto; /* Keep the aspect ratio of the logo */
+      max-width: 100%; /* Responsive image */
+      object-fit: contain;
+    }
+
+    #signIn-Btn:active {
+      background: linear-gradient(90deg, rgb(0, 123, 255) 0%, rgb(130, 8, 237) 100%);
+    }
+  </style>
+</head>
+<body class="bg-[#798DA4] h-screen flex items-center justify-center">
+
+  <!-- Login Card -->
+  <div class="max-w-md w-full text-center p-6 ">
+    <!-- Logo/Icon -->
+    <div class="logoMain flex justify-center mb-6">
+      <a href="./index.html"><img src="../images/logoForWebpage.png" alt="Login Icon"></a>
+    </div>
+
+    <!-- Heading -->
+    <h2 class="text-3xl font-bold text-black mb-6">Let's Get Started</h2>
+
+    <!-- Form Inputs -->
+    <form action="#" class="space-y-4">
+
+      <!-- Email Input -->
+      <div>
+        <input id="email" type="email" placeholder="Email address or mobile number" class="w-full p-3 rounded-md bg-[#93F6F0] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+      </div>
+
+      <!-- Password Input with Icon -->
+      <div class="relative">
+        <input id="password" type="password" id="password" placeholder="Password" class="w-full p-3 rounded-md bg-[#93F6F0] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePasswordVisibility('password', 'eye-icon', 'eye-cut-line')">
+          <!-- Eye Icon (for show/hide password) -->
+          <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-.42 1.658-1.285 3.127-2.458 4.243C15.732 16.057 11.478 17 12 17c-4.477 0-8.268-2.943-9.542-7z" />
+            <line id="eye-cut-line" x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Forgot Password Link -->
+      <div class="text-right">
+        <a href="#" class="font-semibold text-sl text-black-400 hover:underline text-red-800">Forget password?</a>
+      </div>
+
+      <!-- Sign In Button -->
+      <button id="signIn-Btn" class="w-full py-3 text-white gradient-btn rounded-md hover:shadow-lg transition-all duration-300">Sign in</button>
+      
+      <!-- Admin sign in btn -->
+      <button id="Admin-Btn" class="w-full py-3 text-white gradient-btn rounded-md hover:shadow-lg transition-all duration-300">Login as an Admin</button>
+
+    </form>
+
+    <!-- Sign Up Link -->
+    <p class="mt-6 text-sl text-black-400 ">
+      If you don't have an account, Click <a href="./signupPage.html" class="text-blue-900 hover:underline font-semibold ">Register Now</a>
+    </p>
+  </div>
+
+  <script src="../Scripts/passwordToggle.js"></script>
+
+  <script>
+
+    const admin = {
+        name: "Arjay",
+        email: "arjay@hotmail.com",
+        password: "adminpass",
+        role: "admin"
+    };
+
+    // Add admin to localStorage
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push(admin);
+    localStorage.setItem("users", JSON.stringify(users));
+
+    document.getElementById("Admin-Btn").addEventListener('click', (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    // Fetch admin users from local storage
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const adminUser = users.find(user => user.email === email && user.password === password && user.role === "admin");
+
+    if (adminUser) {
+        localStorage.setItem('loggedInAdmin', JSON.stringify(adminUser)); // Store admin details
+        window.location.href = "admin1.html"; // Redirect to admin dashboard
+    } else {
+        alert("Unauthorized: Admin access denied.");
+    }
+});
+
+
+    document.addEventListener('DOMContentLoaded', (e) => { // Change 'onload' to 'DOMContentLoaded'
+        // Retrieve stored users from local storage
+        let storedUsers = localStorage.getItem("users");
+        let users = storedUsers ? JSON.parse(storedUsers) : []; // Parse if users exist, otherwise initialize as empty array
+
+        // Function to find all users without a password set
+        let findUsersWithoutPassword = () => {
+            return users.filter(user => !user.password);
+        };
+
+        let usersWithoutPassword = findUsersWithoutPassword();
+
+        if (usersWithoutPassword.length > 0) {
+            console.log('Users without a password:');
+            usersWithoutPassword.forEach(user => console.log(user.name));
+
+            // Update local storage to remove users without a password
+            users = users.filter(user => user.password); // Keep only users with a password
+            localStorage.setItem("users", JSON.stringify(users)); // Update local storage
+            console.log('Updated user list saved to local storage.');
+        } else {
+            console.log('All users have a password set.');
+        }
+    });
+
+
+    //userauth
+    function handleLogin(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // Fetch users from local storage
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        
+        // Filter users based on email and password
+        const filteredUsers = users.filter(user => user.email === email && user.password === password);
+
+        if (filteredUsers.length > 0) {
+            // Store the first matching user in localStorage
+            localStorage.setItem('loggedInUser', JSON.stringify(filteredUsers[0]));
+            window.location.href = "notifications.html";
+        } else {
+            alert("We couldn't log you in. Please check your username and password. If you don't have an account, click 'Register' below.");
+        }
+    }
+
+    
+
+    // Attach the function to the form submit event
+    document.querySelector('form').addEventListener('submit', handleLogin);
+</script>
+  
+
+</body>
+</html>

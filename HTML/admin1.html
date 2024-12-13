@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PO Box Admin Dashboard</title>
+    <style>
+        
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .header {
+            background-color: #115159;
+            color: white;
+            padding: 15px;
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .header img {
+            height: 60px; /* Adjust logo size */
+        }
+        .container {
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            padding: 8px;
+            width: calc(100% - 100px);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-bar button {
+            padding: 8px 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-bar button:hover {
+            background-color: #444;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            border-radius: 10px;
+        }
+        .popup-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .popup-content {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .popup button {
+            padding: 8px 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .popup button:hover {
+            background-color: #444;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(4, 42, 33, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#8EA48C]">
+
+
+<body>
+    <div class="header">
+        <img src="../images/logoForWebpage.png"> 
+        <div>PO Box Admin Dashboard</div>
+    </div>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search by customer name, location, or login date">
+            <button onclick="performSearch()">Search</button>
+        </div>
+        <div class="section">
+            <h2>Active Customers</h2>
+            <table id="customerTable">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>PO Box Location</th>
+                        <th>Last Login</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="overlay" id="overlay" onclick="closePopup()"></div>
+    <div class="popup" id="popup">
+        <div class="popup-header" id="popupHeader"></div>
+        <div class="popup-content" id="popupContent"></div>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <script>
+        // Sample data with addresses
+        const customers = [
+            { name: "Annie Doe", location: "Thunder Bay, Ontario", lastLogin: "2024-12-01", address: "123 Thunder St, Thunder Bay, ON" },
+            { name: "Bany Smith", location: "Ottawa, Ontario", lastLogin: "2024-12-03", address: "45 Parliament Rd, Ottawa, ON" },
+            { name: "Emily Johnson", location: "Hamilton, Ontario", lastLogin: "2024-11-28", address: "678 Steel Ave, Hamilton, ON" },
+            { name: "Michael Brown", location: "London, Ontario", lastLogin: "2024-11-30", address: "890 Downtown Rd, London, ON" },
+            { name: "Sarah Davis", location: "Mississauga, Ontario", lastLogin: "2024-12-02", address: "56 City Center Blvd, Mississauga, ON" },
+            { name: "Chris Wilson", location: "Brampton, Ontario", lastLogin: "2024-12-04", address: "23 Flower Rd, Brampton, ON" },
+            { name: "Jessica Garcia", location: "Kitchener, Ontario", lastLogin: "2024-12-01", address: "99 Pioneer St, Kitchener, ON" },
+            { name: "Daniel Martinez", location: "Windsor, Ontario", lastLogin: "2024-11-29", address: "222 Border Rd, Windsor, ON" },
+            { name: "Sophia Anderson", location: "Markham, Ontario", lastLogin: "2024-12-05", address: "111 Maple Dr, Markham, ON" },
+            { name: "Ryan Thomas", location: "Vaughan, Ontario", lastLogin: "2024-12-03", address: "88 King Rd, Vaughan, ON" },
+            { name: " Doel Pyarsh", location: "Thunder Bay, Ontario", lastLogin: "2024-12-01", address: "123 Thunder St, Thunder Bay, ON" },
+            { name: "Sherley Smith", location: "Ottawa, Ontario", lastLogin: "2024-12-03", address: "45 Parliament Rd, Ottawa, ON" },
+            { name: "Emilyn Johnson", location: "Hamilton, Ontario", lastLogin: "2024-11-28", address: "678 Steel Ave, Hamilton, ON" },
+            { name: "Mike Brown", location: "London, Ontario", lastLogin: "2024-11-30", address: "890 Downtown Rd, London, ON" },
+            { name: "Rogger Davis", location: "Mississauga, Ontario", lastLogin: "2024-12-02", address: "56 City Center Blvd, Mississauga, ON" },
+            { name: "Malik Wilson", location: "Brampton, Ontario", lastLogin: "2024-12-04", address: "23 Flower Rd, Brampton, ON" },
+            { name: "Nita Garcia", location: "Kitchener, Ontario", lastLogin: "2024-12-01", address: "99 Pioneer St, Kitchener, ON" },
+            { name: "Duplin Martinez", location: "Windsor, Ontario", lastLogin: "2024-11-29", address: "222 Border Rd, Windsor, ON" },
+            { name: "Triaha Anderson", location: "Markham, Ontario", lastLogin: "2024-12-05", address: "111 Maple Dr, Markham, ON" },
+            { name: "Ronald Thomas", location: "Vaughan, Ontario", lastLogin: "2024-12-03", address: "88 King Rd, Vaughan, ON" }
+        ];
+
+        // Function to display customer data
+        function loadCustomers(data) {
+            const tableBody = document.getElementById("customerTable").querySelector("tbody");
+            tableBody.innerHTML = ""; // Clear table
+            data.forEach(customer => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${customer.name}</td>
+                    <td>${customer.location}</td>
+                    <td>${customer.lastLogin}</td>
+                `;
+                row.addEventListener("click", () => openPopup(customer));
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Initial load
+        loadCustomers(customers);
+
+        // Search functionality
+        function performSearch() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const filteredCustomers = customers.filter(customer =>
+                customer.name.toLowerCase().includes(query) ||
+                customer.location.toLowerCase().includes(query) ||
+                customer.lastLogin.includes(query)
+            );
+            loadCustomers(filteredCustomers);
+        }
+
+        // Popup functionality
+        function openPopup(customer) {
+            document.getElementById("popupHeader").textContent = customer.name;
+            document.getElementById("popupContent").innerHTML = `
+                <p><strong>Location:</strong> ${customer.location}</p>
+                <p><strong>Address:</strong> ${customer.address}</p>
+                <p><strong>Last Login:</strong> ${customer.lastLogin}</p>
+            `;
+            document.getElementById("overlay").style.display = "block";
+            document.getElementById("popup").style.display = "block";
+        }
+
+        function closePopup() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("popup").style.display = "none";
+        }
+    </script>
+</body>
+</html>

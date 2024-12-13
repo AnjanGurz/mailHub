@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="./Country+State+District-City-Data.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .gradient-btn {
+            background: linear-gradient(90deg, #1114a5 0%, #a855f7 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-btn:hover {
+            background: linear-gradient(90deg, #a855f7 0%, #1114a5 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 60px; 
+            height: 60px; 
+            object-fit: contain; 
+        }
+
+        .logoUnlock {
+            width: 100px; 
+            height: 100px; 
+            object-fit: contain; 
+        }
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5); 
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: white; 
+            margin: 10% auto; 
+            padding: 1.5rem; 
+            border: 1px solid #e5e7eb; 
+            width: 90%; 
+            max-width: 500px; 
+            border-radius: 1rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+        .modal.show .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .cards {
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .cards:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        #userDetails p {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 0.5rem;
+            right: 0;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-item {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-item:hover {
+            background-color: #bcb5b5;
+        }
+        .badge {
+            background-color: #f97316;
+            color: white;
+            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+            font-weight: bold;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#8EA48C]">
+
+    <!-- Navbar -->
+    <nav class="bg-[#617690] p-4 flex flex-col sm:flex-row justify-between items-center shadow-lg">
+        <div class="flex items-center mb-4 sm:mb-0">
+            <a class="mr-3" href="#"><img src="../images/logoForWebpage.png" alt="Logo" class="logo mr-3"></a>
+            <span class="text-xl sm:text-4xl font-bold text-gray-800">Profile Page</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="dropdown">
+                <button class="text-white gradient-btn px-4 sm:px-6 py-2 rounded-full font-semibold text-sm sm:text-base">
+                    Menu
+                    <span class="badge ml-2">1</span>
+                </button>
+                <div class="dropdown-content">
+                    <a href="notifications.html" class="dropdown-item">Notifications </a>
+                    <a href="P.O.BoxBill.html" class="dropdown-item">P.O. Box Bill</a>
+                </div>
+            </div>
+            <button onclick="logout()" class="text-white gradient-btn px-4 sm:px-6 py-2 rounded-full font-semibold text-sm sm:text-base">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-4 sm:p-6 md:p-10">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-4"><span id="userName" class="text-indigo-600"></span>!</h2>
+        <h3 class="text-lg sm:text-xl font-semibold mb-6">Welcome to Profile Mail Hub</h3>
+        <p class="text-4xl text-base sm:text-lg text-center mb-8 sm:mb-10">You can manage your account and settings here.</p>
+
+        <!-- User Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <!-- profile card -->
+            <div class="cards p-4 sm:p-6">
+                <h3 class="text-xl sm:text-2xl font-semibold mb-4">Account Information</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4">View and edit your account details.</p>
+                <div id="userDetails" class="space-y-3"></div>
+                <button onclick="openEditModal()" class="mt-6 text-white gradient-btn px-4 sm:px-6 py-2 rounded-full font-semibold text-sm sm:text-base w-full sm:w-auto">Edit Profile</button>
+            </div>
+
+            <!-- support card -->
+            <div class="cards p-4 sm:p-6">
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-semibold mb-4">Support</h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-4">Contact customer support for help.</p>
+                    <button onclick="openContactModal()" class="mt-6 text-white gradient-btn px-4 sm:px-6 py-2 rounded-full font-semibold text-sm sm:text-base w-full sm:w-auto">Contact Support</button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close text-2xl font-bold text-gray-500 float-right cursor-pointer" onclick="closeEditModal()">&times;</span>
+            <h2 class="text-xl sm:text-2xl font-bold mb-6">Edit Profile</h2>
+            <form id="editForm" class="space-y-4">
+                <div>
+                    <label for="nameInput" class="block text-sm font-medium text-gray-700">Name:</label>
+                    <input type="text" id="nameInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter your name">
+                </div>
+                <div>
+                    <label for="surnameInput" class="block text-sm font-medium text-gray-700">Surname:</label>
+                    <input type="text" id="surnameInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter your surname">
+                </div>
+                <div>
+                    <label for="emailInput" class="block text-sm font-medium text-gray-700">Email:</label>
+                    <input type="email" id="emailInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter your email">
+                </div>
+                <div>
+                    <label for="phoneInput" class="block text-sm font-medium text-gray-700">Phone:</label>
+                    <input type="text" id="phoneInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter your phone number">
+                </div>
+                <div>
+                    <label for="countySel" class="text-black-300 block mb-1 text-left">Country:</label>
+                    <select id="countySel" name="country" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                      <option value="" selected>Please select Country</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="stateSel" class="text-black-300 block mb-1 text-left">State:</label>
+                    <select id="stateSel" name="state" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                      <option value="" selected>Please select State</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="districtSel" class="text-black-300 block mb-1 text-left">District/City:</label>
+                    <select id="districtSel" name="district" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <option value="" selected>Please select District/City</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="locationInput" class="block text-sm font-medium text-gray-700">Location:</label>
+                    <input type="text" id="locationInput" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Enter your location">
+                </div>
+                <button type="submit" class="w-full text-white gradient-btn px-4 sm:px-6 py-2 rounded-full font-semibold text-sm sm:text-base mt-6">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    
+    <!-- Contact Support Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close text-2xl font-bold text-gray-500 float-right cursor-pointer" onclick="closeContactModal()">&times;</span>
+            <div class="flex flex-col items-center gap-4">
+                <h2 class="text-xl sm:text-2xl font-bold mb-2 text-blue-700">Contact Support</h2>
+                <p>Customer service</p>
+                <p class="text-green-800">Please call or text us</p>
+                <p class="text-red-900 font-bold">807 555 5556</p>
+                <p class="text-red-900 font-bold">Monday to Sunday</p>
+                <p class="text-purple-800">8am to 8pm</p>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="bg-[#617690] p-4 text-center shadow-lg">
+        <p class="text-black-600 font-bold text-sm sm:text-base">© 2024 <span class="font-bold"><i>MailHub</i></span> All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function loadUserInfo() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (loggedInUser) {
+                document.getElementById('userName').innerText = loggedInUser.name;
+                displayUserDetails(loggedInUser);
+                fillEditFields(loggedInUser);
+                populateCountries();
+            } else {
+                alert('User not logged in. Redirecting to login page.');
+                window.location.href = 'signinPage.html';
+            }
+        }
+
+        function displayUserDetails(user) {
+            const userDetails = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <p class="flex items-center space-x-2">
+                        <i data-lucide="user" class="h-5 w-5 text-indigo-500"></i>
+                        <span id="displayName" class="text-sm sm:text-base">${user.name} ${user.surName}</span>
+                    </p>
+                    <p class="flex items-center space-x-2">
+                        <i data-lucide="mail" class="h-5 w-5 text-indigo-500"></i>
+                        <span id="displayEmail" class="text-sm sm:text-base">${user.email}</span>
+                    </p>
+                    <p class="flex items-center space-x-2">
+                        <i data-lucide="phone" class="h-5 w-5 text-indigo-500"></i>
+                        <span id="displayPhone" class="text-sm sm:text-base">${user.contact || 'Not provided'}</span>
+                    </p>
+                    <p class="flex items-center space-x-2">
+                        <i data-lucide="map-pin" class="h-5 w-5 text-indigo-500"></i>
+                        <span id="displayLocation" class="text-sm sm:text-base">${user.address || 'Not provided'}</span>
+                    </p>
+                    <p class="flex items-center space-x-2">
+                        <i data-lucide="globe" class="h-5 w-5 text-indigo-500"></i>
+                        <span id="displayCountry" class="text-sm sm:text-base">${user.country || 'Not provided'}</span>
+                    </p>
+                    <p class="flex items-center space-x-2">
+                        <i data-lucide="building" class="h-5 w-5 text-indigo-500"></i>
+                        <span id="displayState" class="text-sm sm:text-base">${user.state || 'Not provided'}</span>
+                    </p>
+                    <p class="flex items-center space-x-2">
+                        <i data-lucide="landmark" class="h-5 w-5 text-indigo-500"></i>
+                        <span id="displayDistrict" class="text-sm sm:text-base">${user.district || 'Not provided'}</span>
+                    </p>
+                </div>
+            `;
+            document.getElementById('userDetails').innerHTML = userDetails;
+            lucide.createIcons();
+        }
+
+        function fillEditFields(user) {
+            document.getElementById('nameInput').value = user.name;
+            document.getElementById('surnameInput').value = user.surName;
+            document.getElementById('emailInput').value = user.email;
+            document.getElementById('locationInput').value = user.address || '';
+            document.getElementById('phoneInput').value = user.contact || '';
+            document.getElementById('countySel').value = user.country || '';
+            populateStates();
+            document.getElementById('stateSel').value = user.state || '';
+            populateDistricts();
+            document.getElementById('districtSel').value = user.district || '';
+        }
+
+        function openEditModal() {
+            const modal = document.getElementById('editModal');
+            modal.style.display = 'block';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        //contact modal
+
+        function openContactModal() {
+            const modal = document.getElementById('contactModal');
+            modal.style.display = 'block';
+            setTimeout(() => modal.classList.add('show'), 10); // Add animation
+        }
+
+        function closeContactModal() {
+            const modal = document.getElementById('contactModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 300); // Remove after animation
+        }
+
+        function populateCountries() {
+            const countySel = document.getElementById('countySel');
+            for (let country in stateObject) {
+                countySel.options[countySel.options.length] = new Option(country, country);
+            }
+        }
+
+        function populateStates() {
+            const countySel = document.getElementById('countySel');
+            const stateSel = document.getElementById('stateSel');
+            const districtSel = document.getElementById('districtSel');
+            stateSel.length = 1;
+            districtSel.length = 1;
+            if (countySel.value in stateObject) {
+                for (let state in stateObject[countySel.value]) {
+                    stateSel.options[stateSel.options.length] = new Option(state, state);
+                }
+            }
+        }
+
+        function populateDistricts() {
+            const countySel = document.getElementById('countySel');
+            const stateSel = document.getElementById('stateSel');
+            const districtSel = document.getElementById('districtSel');
+            districtSel.length = 1;
+            const country = countySel.value;
+            if (country in stateObject && stateSel.value in stateObject[country]) {
+                let districts = stateObject[country][stateSel.value];
+                for (let i = 0; i < districts.length; i++) {
+                    districtSel.options[districtSel.options.length] = new Option(districts[i], districts[i]);
+                }
+            }
+        }
+
+        document.getElementById('countySel').addEventListener('change', populateStates);
+        document.getElementById('stateSel').addEventListener('change', populateDistricts);
+
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('nameInput').value;
+            const surname = document.getElementById('surnameInput').value;
+            const email = document.getElementById('emailInput').value;
+            const location = document.getElementById('locationInput').value;
+            const phone = document.getElementById('phoneInput').value;
+            const country = document.getElementById('countySel').value;
+            const state = document.getElementById('stateSel').value;
+            const district = document.getElementById('districtSel').value;
+
+            let loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            let users = JSON.parse(localStorage.getItem('users'));
+
+            let findUserIndex = users.findIndex(user => user.email === loggedInUser.email);
+
+            users[findUserIndex] = {
+                ...users[findUserIndex],
+                name,
+                surName: surname,
+                email,
+                address: location,
+                contact: phone,
+                country,
+                state,
+                district
+            };
+
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('loggedInUser', JSON.stringify(users[findUserIndex]));
+            
+            displayUserDetails(users[findUserIndex]);
+            closeEditModal();
+        });
+
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            window.location.href = 'signinPage.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUserInfo);
+    </script>
+</body>
+</html>

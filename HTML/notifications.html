@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Home Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-btn {
+            background: linear-gradient(90deg, #1114a5 0%, #a855f7 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-btn:hover {
+            background: linear-gradient(90deg, #a855f7 0%, #1114a5 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 0.5rem;
+            right: 0;
+        }
+        .dropdown a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+        .show {
+            display: block;
+        }
+
+        /* modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            position: relative;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#8EA48C]">
+    <!-- Navbar -->
+    <nav class="bg-[#617690] p-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center">
+            <a href="./notifications.html"><img src="../images/logoForWebpage.png" alt="Logo" class="logo mr-3"></a>
+            <span class="text-2xl font-bold text-white">Dashboard Home Page</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <button onclick="toggleDropdown()" class="gradient-btn text-white px-6 py-2 rounded-full font-semibold">
+                    Menu
+                    <span class="ml-2 bg-[#f97316] text-white text-sm px-2 py-1 rounded-full font-bold" id="notificationCount">2</span>
+                </button>
+                <div id="myDropdown" class="dropdown">
+                    <a href="dashboardHomepage.html">Profile</a>
+                    <a href="P.O.BoxBill.html">P.O. Box</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow p-6 md:p-10">
+        <h2 class="text-3xl font-bold mb-2">Bonjour, <span id="userName" class="text-indigo-600"></span>!</h2>
+        <h3 class="text-xl font-semibold mb-6">Welcome to the Mail Hub.</h3>
+        <hr><br>
+
+        <!-- Search Bar -->
+        <div class="mb-8 relative">
+            <input type="text" id="searchInput" placeholder="Search emails..." class="w-full px-12 py-3 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+
+        <!-- Tabs -->
+        <div class="bg-white rounded-t-lg">
+            <div class="flex border-b">
+                <button onclick="toggleNewMail()" id="newMailTab" class="flex-1 text-center py-4 font-semibold border-b-4 border-[#0f766e] text-[#0f766e] bg-gray-50">
+                    New Mail 
+                    <span id="newMailCount" class="ml-2 bg-[#f97316] text-white text-sm px-2 py-1 rounded-full font-bold">2</span>
+                </button>
+                <button onclick="showTab('recycleBin')" id="recycleBinTab" class="flex-1 text-center py-4 font-semibold border-b-4 border-transparent text-gray-600">
+                    Recycle Bin
+                </button>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notifications" class="bg-white shadow rounded-b-lg p-6" style="display: none;">
+            <div id="newMail">
+                <!-- New Mail items will be dynamically inserted here -->
+            </div>          
+            <div id="recycleBin" style="display: none;">
+                <!-- Recycle Bin items will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <div id="modal" class="modal" onclick="closeModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <img id="modalImage" src="" alt="Enlarged Notification Image" class="modal-image">
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#617690] p-4 text-center shadow-lg">
+        <p class="text-black-600 font-bold">© 2024 <span class="font-bold"><i>MailHub</i></span> All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        let notifications = [
+            {
+                id: 1,
+                title: 'CIBC Mail',
+                message: 'You have received a new letter from CIBC.',
+                image: '../images/CIBC.png',
+                PopImage: '../images/Cibc.jpg',
+                time: 'Delivered 1m ago',
+                isRead: false
+            },
+            {
+                id: 2,
+                title: "Mark's",
+                message: "Save 60% - 50%.",
+                image: "../images/MarksL.png",
+                PopImage: '../images/Marks.jpg',
+                time: "Delivered 10min ago",
+                isRead: false
+            },
+            {
+                id: 3,
+                title: "Hello fresh",
+                message: "11 Free meals.",
+                image: "../images/HellofreshL.jpg",
+                PopImage: '../images/Hellofresh.jpg',
+                time: "Delivered today",
+                isRead: false
+            },
+            {
+                id: 4,
+                title: 'Unknown',
+                message: 'Mail unknown',
+                image: '../images/UnknownL.png',
+                PopImage: '../images/Unknown.jpg',
+                time: 'Delivered 5d ago',
+                isRead: false
+            }
+        ];
+        let recycleBin = [];
+
+        function toggleDropdown() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.gradient-btn')) {
+                var dropdowns = document.getElementsByClassName("dropdown");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        };
+
+        function showTab(tabName) {
+            const newMailDiv = document.getElementById('newMail');
+            const recycleBinDiv = document.getElementById('recycleBin');
+            const notificationsDiv = document.getElementById('notifications');
+    
+            if (tabName === 'newMail') {
+                newMailDiv.style.display = 'block';
+                recycleBinDiv.style.display = 'none';
+            } else if (tabName === 'recycleBin') {
+                newMailDiv.style.display = 'none';
+                recycleBinDiv.style.display = 'block';
+                notificationsDiv.style.display = 'block';
+            }
+
+            document.getElementById('newMailTab').classList.toggle('border-[#0f766e]', tabName === 'newMail');
+            document.getElementById('newMailTab').classList.toggle('text-[#0f766e]', tabName === 'newMail');
+            document.getElementById('newMailTab').classList.toggle('bg-gray-50', tabName === 'newMail');
+            document.getElementById('recycleBinTab').classList.toggle('border-[#0f766e]', tabName === 'recycleBin');
+            document.getElementById('recycleBinTab').classList.toggle('text-[#0f766e]', tabName === 'recycleBin');
+            document.getElementById('recycleBinTab').classList.toggle('bg-gray-50', tabName === 'recycleBin');
+        }
+
+        function toggleNewMail() {
+            const notificationsDiv = document.getElementById('notifications');
+            const newMailDiv = document.getElementById('newMail');
+            const recycleBinDiv = document.getElementById('recycleBin');
+
+            if (notificationsDiv.style.display === 'none' || notificationsDiv.style.display === '') {
+                notificationsDiv.style.display = 'block';
+                newMailDiv.style.display = 'block';
+                recycleBinDiv.style.display = 'none';
+                showTab('newMail');
+            } else {
+                notificationsDiv.style.display = 'none';
+            }
+        }
+
+        function renderNotifications() {
+            const newMailContainer = document.getElementById('newMail');
+            const recycleBinContainer = document.getElementById('recycleBin');
+            newMailContainer.innerHTML = '';
+            recycleBinContainer.innerHTML = '';
+
+            notifications.forEach(notification => {
+                const notificationElement = createNotificationElement(notification, false);
+                newMailContainer.appendChild(notificationElement);
+            });
+
+            recycleBin.forEach(notification => {
+                const notificationElement = createNotificationElement(notification, true);
+                recycleBinContainer.appendChild(notificationElement);
+            });
+
+            updateNotificationCount();
+        }
+
+        function createNotificationElement(notification, isRecycleBin) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center p-4 mb-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow';
+            div.innerHTML = `
+                <img src="${notification.image}" alt="${notification.title}" class="w-12 h-12 rounded-full mr-4">
+                <div class="flex-grow">
+                    <h2 class="font-bold text-lg">${notification.title}</h2>
+                    <p class="text-gray-600 mt-1">${notification.message}</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-gray-400">${notification.time}</span>
+                    ${!isRecycleBin ? `
+                        <button onclick="deleteNotification(${notification.id})" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors">Delete</button>
+                    ` : ''}
+                </div>
+            `;
+            div.style.fontWeight = notification.isRead ? 'normal' : '1000';
+            div.addEventListener('click', () => {
+                openModal(notification.PopImage);
+                markAsViewed(notification.id, div);
+            });
+            return div;
+        }
+
+        function markAsViewed(notificationId, div) {
+            const notification = notifications.find(notif => notif.id === notificationId);
+            if (notification) {
+                notification.isRead = true;
+            }
+            div.style.fontWeight = 'normal';
+            renderNotifications();
+        }
+
+        function deleteNotification(id) {
+            const notificationIndex = notifications.findIndex(n => n.id === id);
+            if (notificationIndex !== -1) {
+                const [deletedNotification] = notifications.splice(notificationIndex, 1);
+                recycleBin.push(deletedNotification);
+                renderNotifications();
+            }
+        }
+
+        function updateNotificationCount() {
+            const notificationCount = document.getElementById('notificationCount');
+            const newMailCount = document.getElementById('newMailCount');
+            const unreadCount = notifications.filter(notification => !notification.isRead).length;
+            notificationCount.textContent = unreadCount;
+            newMailCount.textContent = unreadCount;
+            notificationCount.style.display = unreadCount === 0 ? 'none' : 'inline-block';
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchQuery = e.target.value.toLowerCase();
+            const filteredNotifications = notifications.filter(notification => 
+                notification.title.toLowerCase().includes(searchQuery) ||
+                notification.message.toLowerCase().includes(searchQuery)
+            );
+            const newMailContainer = document.getElementById('newMail');
+            newMailContainer.innerHTML = '';
+            filteredNotifications.forEach(notification => {
+                const notificationElement = createNotificationElement(notification, false);
+                newMailContainer.appendChild(notificationElement);
+            });
+        });
+
+        function loadUserInfo() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (loggedInUser) {
+                document.getElementById('userName').innerText = loggedInUser.name;
+            } else {
+                alert('User not logged in. Redirecting to login page.');
+                window.location.href = 'signinPage.html';
+            }
+        }
+
+        function openModal(imageSrc) {
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modalImage');
+            modal.style.display = 'flex';
+            modalImage.src = imageSrc;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+        }
+
+        window.onload = function() {
+            renderNotifications();
+            loadUserInfo();
+        };
+    </script>
+</body>
+</html>
+

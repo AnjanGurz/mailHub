@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mail Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #364C65;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            color: #fff;
+        }
+
+        .logo img {
+            height: 200px;
+            width: auto; 
+            max-width: 100%; 
+            object-fit: contain;
+        }
+
+        .logo {
+            margin-bottom: 20px; /* Space below the logo
+             */
+            border: 1px solid #364C65;
+            background-color: #6EA5B6;
+            padding: 1.5rem;
+            border-radius: 12rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px; /* Added margin for better spacing */
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px; 
+            max-width: 600px; 
+        }
+
+        .Start-button {
+            background: linear-gradient(180deg, rgb(107, 40, 201), rgb(42, 19, 144));
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+        }
+
+        .Start-button:hover {
+            background: linear-gradient(180deg, rgb(42, 19, 144), rgb(28, 92, 141)); /* Darker button on hover */
+        }
+
+        .Start-button:active {
+            background: rgb(28, 92, 141); 
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem; /* Slightly larger for readability on smaller screens */
+            }
+
+            p {
+                font-size: 1rem; /* Smaller paragraph text */
+            }
+
+            .Start-button {
+                padding: 10px 20px; /* Adjust button padding for mobile */
+                font-size: 0.9rem; /* Smaller button text */
+            }
+
+            .logo img {
+                height: 200px; /* Reduce logo size for mobile */
+                max-width: 100%; /* Ensure it stays responsive */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="../images/logoForWebpage.png" alt="Login Icon">
+    </div>
+    <h1>Welcome to Mail Hub!</h1>
+    <a href="./signinPage.html"><button class="Start-button">Get Started</button></a>
+</body>
+</html>

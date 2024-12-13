@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./Country+State+District-City-Data.js"></script>
+  <style>
+    .gradient-btnForSignin {
+      background: linear-gradient(90deg, rgba(0,204,255,1) 0%, rgba(255,0,150,1) 100%);
+    }
+
+    .gradient-btnForSignin:hover {
+      background: linear-gradient(90deg, rgba(255,0,150,1) 0%, rgba(0,204,255,1) 100%);
+    }
+
+    .gradient-btn {
+      background: linear-gradient(90deg, rgba(255,0,150,1) 0%, rgba(0,204,255,1) 100%);
+    }
+
+    .gradient-btn:hover {
+      background: linear-gradient(90deg, rgba(0,204,255,1) 0%, rgba(255,0,150,1) 100%);
+    }
+
+    .gradient-btn:active {
+      background: linear-gradient(90deg, rgb(0, 123, 255) 0%, rgb(130, 8, 237) 100%);
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .input-container {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .input-container img {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+    }
+
+    .input-container input,
+    .input-container select {
+      width: 100%;
+      padding: 0.75rem;
+      padding-left: 3rem;
+      border-radius: 0.375rem;
+      background: #0D3C36;
+      color: #fff;
+      border: none;
+    }
+
+    .input-container select {
+      padding-left: 1rem; /* No icons for selects */
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 1.25rem;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 640px) {
+      .registration-card {
+        width: 90%;
+        margin: 2rem auto;
+        padding: 1.5rem;
+      }
+
+      .logo {
+        width: 80px;
+        height: 80px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .input-container input,
+      .input-container select {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .registration-card {
+        width: 70%;
+        margin: 3rem auto;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#7A8DA4] min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+
+  <!-- Registration Card -->
+  <div class="registration-card rounded-xl p-6 max-w-md w-full text-center bg-gray-800">  
+    <div class="mb-4">
+      <img src="../images/logoForWebpage.png" alt="Registration Icon" class="logo mx-auto mb-4">
+    </div>
+
+    <h2 class="text-2xl font-bold text-white mb-6">Register Your Account</h2>
+
+    <form id="registration-form" class="space-y-4">
+      <!-- Name Input -->
+      <div class="input-container">
+        <img src="../images/iconForName.png" alt="User Icon"> 
+        <input id="name" type="text" placeholder="Name" required>
+      </div>
+
+      <!-- Surname Input -->
+      <div class="input-container">
+        <img src="../images/iconForSurName.png" alt="Surname Icon"> 
+        <input id="surName" type="text" placeholder="Surname" required>
+      </div>
+
+      <!-- Email Address Input -->
+      <div class="input-container">
+        <img src="../images/iconForEmail.png" alt="Email Icon"> 
+        <input id="email" type="email" placeholder="Email address" required>
+      </div>
+
+      <!-- Phone Number Input -->
+      <div class="input-container">
+        <img src="../images/iconForContact.png" alt="Phone Icon"> 
+        <input id="phoneNum" type="tel" placeholder="Phone number" required>
+      </div>
+
+      <!-- Address Input -->
+      <div class="input-container">
+        <img src="../images/iconForAddress.png" alt="Address Icon"> 
+        <input id="address" type="text" placeholder="Address" required>
+      </div>
+
+      <!-- Country Input -->
+      <div class="input-container">
+        <label for="countySel" class="text-gray-300 block mb-1 text-left">Country:</label>
+        <select id="countySel" name="country">
+          <option value="" selected>Please select Country</option>
+        </select>
+      </div>
+
+      <!-- State Input -->
+      <div class="input-container">
+        <label for="stateSel" class="text-gray-300 block mb-1 text-left">State:</label>
+        <select id="stateSel" name="state">
+          <option value="" selected>Please select State</option>
+        </select>
+      </div>
+
+      <!-- District/City Input -->
+      <div class="input-container">
+        <label for="districtSel" class="text-gray-300 block mb-1 text-left">District/City:</label>
+        <select id="districtSel" name="district">
+          <option value="" selected>Please select District/City</option>
+        </select>
+      </div>
+
+      
+
+      <!-- P.O. Box Input -->
+      <div class="input-container">
+        <label for="po-box-code" class="block text-gray-300 text-sm font-semibold mb-1 text-left">
+          P.O. Box Code
+        </label>
+        <input id="po-box-code" type="text" placeholder="Enter your P.O. Box code" required>
+      </div>
+
+      <button type="submit" id="verify-btn" class="w-full py-3 text-white gradient-btn rounded-md hover:shadow-lg transition-all duration-300">
+        Verify
+      </button>
+
+      <p class="text-gray-400 mt-4">Already have an account?</p>
+      <a href="./signinPage.html" class="block">
+        <button type="button" class="w-full py-3 mt-4 text-white gradient-btnForSignin rounded-md hover:shadow-lg transition-all duration-300">
+          Sign In
+        </button>
+      </a>
+    </form>
+
+    <div id="message" class="message text-green-200 hidden"></div>
+  </div>
+
+  <script>
+    let selectId = id => document.getElementById(id);
+    let select = id => document.querySelectorAll(id);
+    const validPOBoxCodes = ['12445', '54321', '67890'];
+
+    function validatePostalCode(code) {
+      return validPOBoxCodes.includes(code);
+    }
+
+    function populateCountries() {
+      const countySel = selectId('countySel');
+      for (let country in stateObject) {
+        countySel.options[countySel.options.length] = new Option(country, country);
+      }
+    }
+
+    function populateStates() {
+      const countySel = selectId('countySel');
+      const stateSel = selectId('stateSel');
+      const districtSel = selectId('districtSel');
+      
+      stateSel.length = 1;
+      districtSel.length = 1;
+      
+      if (countySel.value in stateObject) {
+        for (let state in stateObject[countySel.value]) {
+          stateSel.options[stateSel.options.length] = new Option(state, state);
+        }
+      }
+    }
+
+    function populateDistricts() {
+      const countySel = selectId('countySel');
+      const stateSel = selectId('stateSel');
+      const districtSel = selectId('districtSel');
+      
+      districtSel.length = 1;
+      
+      if (countySel.value in stateObject && stateSel.value in stateObject[countySel.value]) {
+        let districts = stateObject[countySel.value][stateSel.value];
+        for (let i = 0; i < districts.length; i++) {
+          districtSel.options[districtSel.options.length] = new Option(districts[i], districts[i]);
+        }
+      }
+    }
+
+    selectId('countySel').addEventListener('change', populateStates);
+    selectId('stateSel').addEventListener('change', populateDistricts);
+
+    selectId('registration-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const name = selectId('name').value;
+      const surName = selectId('surName').value;
+      const email = selectId('email').value;
+      const address = selectId('address').value;
+      const contact = selectId('phoneNum').value;
+      const poBoxCode = selectId('po-box-code').value;
+      const country = selectId('countySel').value;
+      const state = selectId('stateSel').value;
+      const district = selectId('districtSel').value;
+
+      if (!validatePostalCode(poBoxCode)) {
+        window.location.href = "errorPage.html";
+        return;
+      }
+
+      const user = { name, surName, email, address, contact, poBox: poBoxCode, password: null, country, state, district };
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      users.push(user);
+      localStorage.setItem('users', JSON.stringify(users));
+
+      window.location.href = 'password-setup.html';
+    });
+
+    document.addEventListener('DOMContentLoaded', populateCountries);
+  </script>
+</body>
+</html>
